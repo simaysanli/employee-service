@@ -4,15 +4,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import lombok.Builder;
-import lombok.Value;
+import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.EnumSet;
 import java.util.UUID;
 
-@Value
-@Builder
+//TODO: Implement with @Value
+@Data
+@Builder(toBuilder = true)
 public class Employee {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
