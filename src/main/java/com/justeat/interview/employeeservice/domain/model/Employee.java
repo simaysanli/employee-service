@@ -1,11 +1,14 @@
 package com.justeat.interview.employeeservice.domain.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
-import java.util.EnumSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "employees")
@@ -30,12 +33,13 @@ public class Employee {
     private String lastName;
 
     @Column(name = "hobbies")
-    private EnumSet<Hobby> hobbies;
+    @Enumerated(EnumType.STRING)
+    private Set<Hobby> hobbies;
 
     @Column(name = "birthday")
     private LocalDate birthday;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
 }

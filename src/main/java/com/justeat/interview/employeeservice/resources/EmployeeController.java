@@ -1,7 +1,7 @@
 package com.justeat.interview.employeeservice.resources;
 
-import com.justeat.interview.employeeservice.domain.model.EmployeeDto;
 import com.justeat.interview.employeeservice.domain.model.Employee;
+import com.justeat.interview.employeeservice.domain.model.EmployeeDto;
 import com.justeat.interview.employeeservice.services.EmployeeService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -57,30 +57,11 @@ public class EmployeeController {
     }
 
     private Employee convertToEntity(EmployeeDto employeeDto) {
-        Employee employee = modelMapper.map(employeeDto, Employee.class);
-
-        employee.setEmployeeId(String.valueOf(employeeDto.getId()));
-        employee.setBirthday(employeeDto.getBirthday());
-        employee.setEmail(employeeDto.getEmail());
-        employee.setHobbies(employeeDto.getHobbies());
-        employee.setFirstName(employeeDto.getFirstName());
-        employee.setLastName(employeeDto.getLastName());
-
-        return employee;
+        return modelMapper.map(employeeDto, Employee.class);
     }
 
     private EmployeeDto convertToDto(Employee employee) {
-        EmployeeDto employeeDto = modelMapper.map(employee, EmployeeDto.class);
-
-        employeeDto.setId(UUID.fromString(employee.getEmployeeId()));
-        employeeDto.setFirstName(employee.getFirstName());
-        employeeDto.setLastName(employee.getLastName());
-        employeeDto.setHobbies(employee.getHobbies());
-        employeeDto.setEmail(employee.getEmail());
-        employeeDto.setBirthday(employee.getBirthday());
-
-        return employeeDto;
+        return modelMapper.map(employee, EmployeeDto.class);
     }
-
 
 }

@@ -2,12 +2,16 @@ package com.justeat.interview.employeeservice.services;
 
 import com.justeat.interview.employeeservice.domain.model.Employee;
 import com.justeat.interview.employeeservice.repository.EmployeeRepository;
+import com.justeat.interview.employeeservice.services.exception.DuplicateEmailException;
 import com.justeat.interview.employeeservice.services.exception.EmployeeNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class EmployeeService {
@@ -18,7 +22,11 @@ public class EmployeeService {
         return employeeRepository.findAll();
     }
 
+    @Transactional
     public Employee addEmployee(Employee newEmployee) {
+        if (employeeRepository.existsByEmail(newEmployee.getEmail())) {
+            throw new DuplicateEmailException("Email address already exists in database");
+        }
         return employeeRepository.save(newEmployee);
     }
 
@@ -27,6 +35,7 @@ public class EmployeeService {
                 .orElseThrow(() -> new EmployeeNotFoundException("No employee found with id: " + employeeId));
     }
 
+    @Transactional
     public ResponseEntity<Employee> updateEmployeeById(String id, Employee updatedEmployee) {
         Employee employee = employeeRepository.findById(String.valueOf(id))
                 .orElseThrow(() -> new NoSuchElementException("No employee found with id: " + id));
