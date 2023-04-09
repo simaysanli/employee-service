@@ -1,9 +1,9 @@
 package com.justeat.interview.employeeservice.services;
 
-import com.justeat.interview.employeeservice.domain.model.Employee;
+import com.justeat.interview.employeeservice.entity.Employee;
+import com.justeat.interview.employeeservice.exception.DuplicateEmailException;
+import com.justeat.interview.employeeservice.exception.EmployeeNotFoundException;
 import com.justeat.interview.employeeservice.repository.EmployeeRepository;
-import com.justeat.interview.employeeservice.services.exception.DuplicateEmailException;
-import com.justeat.interview.employeeservice.services.exception.EmployeeNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +24,7 @@ public class EmployeeService {
 
     @Transactional
     public Employee addEmployee(Employee newEmployee) {
+        //TODO: convert to stream
         if (employeeRepository.existsByEmail(newEmployee.getEmail())) {
             throw new DuplicateEmailException("Email address already exists in database");
         }

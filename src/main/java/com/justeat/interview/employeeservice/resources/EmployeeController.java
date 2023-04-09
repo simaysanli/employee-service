@@ -1,7 +1,7 @@
 package com.justeat.interview.employeeservice.resources;
 
-import com.justeat.interview.employeeservice.domain.model.Employee;
 import com.justeat.interview.employeeservice.domain.model.EmployeeDto;
+import com.justeat.interview.employeeservice.entity.Employee;
 import com.justeat.interview.employeeservice.services.EmployeeService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;

@@ -1,4 +1,4 @@
-package com.justeat.interview.employeeservice.services.exception;
+package com.justeat.interview.employeeservice.exception;
 
 public class DuplicateEmailException extends RuntimeException {
 

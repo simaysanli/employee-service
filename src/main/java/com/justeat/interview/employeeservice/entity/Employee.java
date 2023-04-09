@@ -1,5 +1,6 @@
-package com.justeat.interview.employeeservice.domain.model;
+package com.justeat.interview.employeeservice.entity;
 
+import com.justeat.interview.employeeservice.domain.model.Hobby;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
