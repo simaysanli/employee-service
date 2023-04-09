@@ -6,6 +6,7 @@ import com.justeat.interview.employeeservice.services.EmployeeService;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +36,7 @@ public class EmployeeController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Employee addEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
         Employee employee = convertToEntity(employeeDto);
         return employeeService.addEmployee(employee);

@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -39,7 +38,10 @@ public class EmployeeService {
     @Transactional
     public ResponseEntity<Employee> updateEmployeeById(String id, Employee updatedEmployee) {
         Employee employee = employeeRepository.findById(String.valueOf(id))
-                .orElseThrow(() -> new NoSuchElementException("No employee found with id: " + id));
+                .orElseThrow(() -> new EmployeeNotFoundException("No employee found with id: " + id));
+        if (employeeRepository.existsByEmail(updatedEmployee.getEmail())) {
+            throw new DuplicateEmailException("Email address already exists in database");
+        }
         employee.setFirstName(Optional.ofNullable(updatedEmployee.getFirstName()).orElse(employee.getFirstName()));
         employee.setLastName(Optional.ofNullable(updatedEmployee.getLastName()).orElse(employee.getLastName()));
         employee.setBirthday(Optional.ofNullable(updatedEmployee.getBirthday()).orElse(employee.getBirthday()));
@@ -50,7 +52,7 @@ public class EmployeeService {
 
     public ResponseEntity<Void> removeEmployeeById(String employeeId) {
         Employee employee = employeeRepository.findById(String.valueOf(employeeId)).orElseThrow(
-                () -> new EmployeeNotFoundException("Employee not found" + employeeId));
+                () -> new EmployeeNotFoundException("No employee found with id: " + employeeId));
         employeeRepository.delete(employee);
         return ResponseEntity.ok().build();
     }
