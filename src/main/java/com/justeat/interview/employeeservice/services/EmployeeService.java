@@ -1,59 +1,48 @@
 package com.justeat.interview.employeeservice.services;
 
 import com.justeat.interview.employeeservice.domain.model.Employee;
-import com.justeat.interview.employeeservice.domain.model.Hobby;
+import com.justeat.interview.employeeservice.repository.EmployeeRepository;
+import com.justeat.interview.employeeservice.services.exception.EmployeeNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
 public class EmployeeService {
-    List<Employee> employees = new ArrayList<>();
-    Employee employee = Employee.builder()
-            .id(UUID.randomUUID())
-            .firstName("Simay")
-            .lastName("Sanli")
-            .birthday(LocalDate.of(1995,11,29))
-            .email("sanli.simay@gmail.com")
-            .hobbies(EnumSet.of(Hobby.SOCCER, Hobby.MUSIC))
-            .build();
+    @Autowired
+    EmployeeRepository employeeRepository;
 
     public List<Employee> getEmployees() {
-        employees.add(employee);
-        return employees;
+        return employeeRepository.findAll();
     }
 
-    public ResponseEntity<Employee> addEmployee(Employee employee) {
-        employee = employee.toBuilder().id(UUID.randomUUID()).build();
-        employees.add(employee);
-        return ResponseEntity.ok(employee);
+    public Employee addEmployee(Employee newEmployee) {
+        return employeeRepository.save(newEmployee);
     }
 
-    //TODO: write own exception
-    public Employee getEmployeeById(UUID id) {
-        return employees.stream()
-                .filter(emp -> emp.getId().equals(id))
-                .findFirst()
+    public Employee getEmployeeById(String employeeId) {
+        return employeeRepository.findById(String.valueOf(employeeId))
+                .orElseThrow(() -> new EmployeeNotFoundException("No employee found with id: " + employeeId));
+    }
+
+    public ResponseEntity<Employee> updateEmployeeById(String id, Employee updatedEmployee) {
+        Employee employee = employeeRepository.findById(String.valueOf(id))
                 .orElseThrow(() -> new NoSuchElementException("No employee found with id: " + id));
+        employee.setFirstName(Optional.ofNullable(updatedEmployee.getFirstName()).orElse(employee.getFirstName()));
+        employee.setLastName(Optional.ofNullable(updatedEmployee.getLastName()).orElse(employee.getLastName()));
+        employee.setBirthday(Optional.ofNullable(updatedEmployee.getBirthday()).orElse(employee.getBirthday()));
+        employee.setEmail(Optional.ofNullable(updatedEmployee.getEmail()).orElse(employee.getEmail()));
+        employee.setHobbies(Optional.ofNullable(updatedEmployee.getHobbies()).orElse(employee.getHobbies()));
+        return ResponseEntity.ok(employeeRepository.save(employee));
     }
 
-    public Employee updateEmployeeById(UUID id, Employee updatedEmployee) {
-        for(Employee emp : employees) {
-            if(emp.getId().equals(id)) {
-                emp.setFirstName(Optional.ofNullable(updatedEmployee.getFirstName()).orElse(emp.getFirstName()));
-                emp.setLastName(Optional.ofNullable(updatedEmployee.getLastName()).orElse(emp.getLastName()));
-                emp.setBirthday(Optional.ofNullable(updatedEmployee.getBirthday()).orElse(emp.getBirthday()));
-                emp.setEmail(Optional.ofNullable(updatedEmployee.getEmail()).orElse(emp.getEmail()));
-                emp.setHobbies(Optional.ofNullable(updatedEmployee.getHobbies()).orElse(emp.getHobbies()));
-            }
-        }
-        return getEmployeeById(id);
-    }
-
-    public boolean removeEmployeeById(UUID id) {
-        return employees.removeIf(emp -> emp.getId().equals(id));
+    public ResponseEntity<Void> removeEmployeeById(String employeeId) {
+        Employee employee = employeeRepository.findById(String.valueOf(employeeId)).orElseThrow(
+                () -> new EmployeeNotFoundException("Employee not found" + employeeId));
+        employeeRepository.delete(employee);
+        return ResponseEntity.ok().build();
     }
 
 }

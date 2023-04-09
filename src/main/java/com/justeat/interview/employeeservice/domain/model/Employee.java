@@ -1,30 +1,42 @@
 package com.justeat.interview.employeeservice.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Email;
-import lombok.Builder;
-import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
+import jakarta.persistence.*;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDate;
 import java.util.EnumSet;
-import java.util.UUID;
 
-//TODO: Implement with @Value
+@Entity
+@Table(name = "employees")
 @Data
-@Builder(toBuilder = true)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Employee {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private UUID id;
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    private String employeeId;
+
+    @Column(name = "firstname")
     private String firstName;
+
+    @Column(name = "lastname")
     private String lastName;
+
+    @Column(name = "hobbies")
     private EnumSet<Hobby> hobbies;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @JsonFormat(pattern = "yyyy-MM-dd")
+
+    @Column(name = "birthday")
     private LocalDate birthday;
 
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}")
+    @Column(name = "email")
     private String email;
+
 }
+
