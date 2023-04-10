@@ -7,9 +7,10 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+
 @SpringBootApplication
 @EnableConfigurationProperties
-@EntityScan(basePackages = {"com.justeat.interview.employeeservice.domain.model"})
+@EntityScan(basePackages = {"com.justeat.interview.employeeservice.entity"})
 public class EmployeeserviceApplication {
 
     public static void main(String[] args) {
@@ -20,5 +21,4 @@ public class EmployeeserviceApplication {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
-
 }
