@@ -8,10 +8,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +26,7 @@ import java.util.stream.Collectors;
 public class EmployeeController {
 
     @Autowired
-    EmployeeService employeeService;
-
+    private EmployeeService employeeService;
     @Autowired
     private ModelMapper modelMapper;
 
@@ -40,6 +39,7 @@ public class EmployeeController {
                     content = @Content)})
     @GetMapping
     @Valid
+    @SecurityRequirement(name = "Bearer Authentication")
     public List<EmployeeDto> getEmployees() {
         List<Employee> employees = employeeService.getEmployees();
         return employees.stream()
@@ -55,8 +55,9 @@ public class EmployeeController {
             @ApiResponse(responseCode = "500", description = "Employee not created",
                     content = @Content)})
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
+    @SecurityRequirement(name = "Bearer Authentication")
     public Employee addEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
+        employeeDto.setId(UUID.randomUUID());
         Employee employee = convertToEntity(employeeDto);
         return employeeService.addEmployee(employee);
     }
@@ -71,6 +72,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "404", description = "Employee not found",
                     content = @Content)})
     @GetMapping(value = "{employeeId}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public EmployeeDto getEmployeeById(@PathVariable String employeeId) {
         return convertToDto(employeeService.getEmployeeById(employeeId));
     }
@@ -85,7 +87,8 @@ public class EmployeeController {
             @ApiResponse(responseCode = "404", description = "Employee not found",
                     content = @Content)})
     @PutMapping(value = "{employeeId}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable UUID employeeId, @RequestBody EmployeeDto employeeDto) {
+    @SecurityRequirement(name = "Bearer Authentication")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable String employeeId, @Valid @RequestBody EmployeeDto employeeDto) {
         Employee updatedEmployee = convertToEntity(employeeDto);
         return employeeService.updateEmployeeById(String.valueOf(employeeId), updatedEmployee);
     }
@@ -100,6 +103,7 @@ public class EmployeeController {
             @ApiResponse(responseCode = "404", description = "Employee not found",
                     content = @Content)})
     @DeleteMapping(value = "{employeeId}")
+    @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Void> removeEmployeeById(@PathVariable UUID employeeId) {
         return employeeService.removeEmployeeById(String.valueOf(employeeId));
     }
