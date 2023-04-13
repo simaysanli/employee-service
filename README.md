@@ -1,6 +1,6 @@
 # Employee Service
 
-The aim of this project is to provide get, create, delete and update employees.
+The employee service to get, create, delete and update employees.
 
 ### Setup
 
