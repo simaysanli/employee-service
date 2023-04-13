@@ -11,7 +11,7 @@ The aim of this project is to provide get, create, delete and update employees.
 - Java 17
 - Intellij IDEA
 
-##### 1 Run dockerized services
+#### 1. Run dockerized services
 
 The project uses Postgresql and Apache Kafka as docker containers. It takes about 3 to 5 minutes for all services to run on a computer.
 
@@ -28,7 +28,7 @@ $ docker-compose down
 ![Kafka Landoop UI](assets/landoop_ui.png)
 
 
-##### REST endpoints with Swagger UI
+#### 2. REST endpoints with Swagger UI
 
 The employee endpoints can be monitored using `http://localhost:8080/swagger-ui/index.html`.
 
@@ -42,7 +42,7 @@ The specific employee can be retrieved by id as shown below.
 
 ![Swagger_UI_GETBYID](assets/get_by_id.png)
 
-##### Authentication for Create, Update and Delete Endpoints with Spring Security and JWT Token
+#### 3. Authentication for Create, Update and Delete Endpoints with Spring Security and JWT Token
 
 The create, update and delete requests require authentication.
 
@@ -66,7 +66,7 @@ The employee can be created as below after authorization. After creating employe
 
 ![Swagger_UI_post](assets/post.png)
 
-##### Exception(Error) Handling for Endpoints
+#### 4. Exception(Error) Handling for Endpoints
 Spring Boot provides a good implementation for exception handling for RESTful Services. **@ControllerAdvice** is a specialization of the @Component annotation which allows to handle exceptions across the whole application in one handling component.
 
 The email field is unique so same email cannot be assigned to new or updated employee. It handles by **@ControllerAdvice**.
@@ -77,11 +77,11 @@ The employee not found is handled by **@ControllerAdvice**.
 
 ![Swagger_UI_email](assets/employee_not_found.png)
 
-##### Coulda/Woulda/Shoulda
+#### 5. Coulda/Woulda/Shoulda
 
 
 - I could have implemented more integration and unit tests.
 - I would have used **@PreAuthorize** annotation to manage authentication of specific endpoints.
 - I would have improved kafka implementation.
 - I would have added tests for security and kafka implementation.
-- i would have implemented front-end part to enhance user experience.
+- I would have implemented front-end part to enhance user experience.
