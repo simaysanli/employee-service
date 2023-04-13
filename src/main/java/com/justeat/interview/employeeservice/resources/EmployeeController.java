@@ -35,7 +35,6 @@ public class EmployeeController {
                     content = @Content)})
     @GetMapping(value = "employees")
     @Valid
-    @SecurityRequirement(name = "Bearer Authentication")
     public List<EmployeeDto> getEmployees() {
         return employeeService.getEmployees();
     }
@@ -64,7 +63,6 @@ public class EmployeeController {
             @ApiResponse(responseCode = "404", description = "Employee not found",
                     content = @Content)})
     @GetMapping(value = "employees/{employeeId}")
-    @SecurityRequirement(name = "Bearer Authentication")
     public EmployeeDto getEmployeeById(@PathVariable String employeeId) {
         return employeeService.getEmployeeById(employeeId);
     }
