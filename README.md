@@ -19,7 +19,6 @@ Simply use:
 
  ```sh
 $ docker-compose up  #to run containerized services
-$ docker-compose down
  ```
 
 #### 2. REST endpoints with Swagger UI
@@ -79,10 +78,18 @@ The employee not found is handled by **@ControllerAdvice**.
 
 ![Swagger_UI_email](assets/employee_not_found.png)
 
-#### 6. Coulda/Woulda/Shoulda
+#### 6. Stop and Remove Containers
+
+Simply use:
+
+ ```sh
+$ docker-compose down
+ ```
+
+#### 7. Coulda/Woulda/Shoulda
 
 
-- I could have implemented more integration and unit tests.
+- I could have implemented more integration and unit tests with separate directory for unit tests and integration tests.
 - I would have used **@PreAuthorize** annotation to manage authentication of specific endpoints.
 - I would have improved kafka implementation.
 - I would have added tests for security and kafka implementation.
