@@ -88,12 +88,11 @@ $ docker-compose down
 
 #### 7. Coulda/Woulda/Shoulda
 
-
 - I could have implemented more integration and unit tests with separate directory for unit tests and integration tests.
 - I would have used **@PreAuthorize** annotation to manage authentication of specific endpoints.
 - I would have improved kafka implementation.
 - I would have added tests for security and kafka implementation.
 - I would have implemented front-end part to enhance user experience.
-- 
+
 ##### Additional Notes
 - Secret key was added in JwtServices for local tests. I know that I shouldn't push secret key to the repository.
