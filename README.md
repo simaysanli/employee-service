@@ -95,4 +95,4 @@ $ docker-compose down
 - I would have implemented front-end part to enhance user experience.
 
 ##### Additional Notes
-- Secret key was added in JwtServices for local tests. I know that I shouldn't push secret key to the repository.
+- Secret key was added in JwtServices for local tests. In real world project it should be stored in the Environment Variable and injected to remote machines while deploying the service.
