@@ -21,12 +21,6 @@ Simply use:
 $ docker-compose up  #to run containerized services
 $ docker-compose down
  ```
- 
- Kafka Cluster and related components can be monitored and managed by Landoop UI at `http://localhost:3030/`. This UI helps us to see topics, schemas and connectors.
-
-
-![Kafka Landoop UI](assets/landoop_ui.png)
-
 
 #### 2. REST endpoints with Swagger UI
 
@@ -66,7 +60,15 @@ The employee can be created as below after authorization. After creating employe
 
 ![Swagger_UI_post](assets/post.png)
 
-#### 4. Exception(Error) Handling for Endpoints
+#### 4. Kafka Implementation
+
+Kafka Cluster and related components can be monitored and managed by Landoop UI at `http://localhost:3030/`. This UI helps us to see topics, schemas and connectors.
+
+![Kafka Landoop UI](assets/landoop_ui.png)
+
+In create and update endpoints, the created or updated employee is written to created kafka topic. Kafka topic can be easily seen in the Landoop UI.
+
+#### 5. Exception(Error) Handling for Endpoints
 Spring Boot provides a good implementation for exception handling for RESTful Services. **@ControllerAdvice** is a specialization of the @Component annotation which allows to handle exceptions across the whole application in one handling component.
 
 The email field is unique so same email cannot be assigned to new or updated employee. It handles by **@ControllerAdvice**.
@@ -77,7 +79,7 @@ The employee not found is handled by **@ControllerAdvice**.
 
 ![Swagger_UI_email](assets/employee_not_found.png)
 
-#### 5. Coulda/Woulda/Shoulda
+#### 6. Coulda/Woulda/Shoulda
 
 
 - I could have implemented more integration and unit tests.
