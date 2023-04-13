@@ -1,19 +1,20 @@
 package com.justeat.interview.employeeservice.services;
 
 import com.justeat.interview.employeeservice.domain.model.EmployeeActionsDto;
+import com.justeat.interview.employeeservice.domain.model.EmployeeDto;
 import com.justeat.interview.employeeservice.entity.Employee;
 import com.justeat.interview.employeeservice.exception.DuplicateEmailException;
 import com.justeat.interview.employeeservice.exception.EmployeeNotFoundException;
 import com.justeat.interview.employeeservice.repository.EmployeeRepository;
-import com.justeat.interview.employeeservice.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
@@ -21,20 +22,19 @@ public class EmployeeService {
     private EmployeeRepository employeeRepository;
 
     @Autowired
-    private UserRepository userInfoRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private ModelMapper modelMapper;
 
     @Autowired
     private KafkaTemplate<String, EmployeeActionsDto> kafkaTemplate;
 
-    public List<Employee> getEmployees() {
-        //kafkaTemplate.send("employee-actions", "UUID", new EmployeeActionsDto("Simay", "Sanli"));
-        return employeeRepository.findAll();
+    public List<EmployeeDto> getEmployees() {
+        return employeeRepository.findAll().stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
     }
 
-    public Employee addEmployee(Employee newEmployee) {
+    public Employee addEmployee(EmployeeDto employeeDto) {
+        Employee newEmployee = convertToEntity(employeeDto);
         if (employeeRepository.existsByEmail(newEmployee.getEmail())) {
             throw new DuplicateEmailException("Email address already exists in database");
         }
@@ -47,12 +47,13 @@ public class EmployeeService {
         return employeeRepository.save(newEmployee);
     }
 
-    public Employee getEmployeeById(String employeeId) {
-        return employeeRepository.findById(String.valueOf(employeeId))
-                .orElseThrow(() -> new EmployeeNotFoundException("No employee found with id: " + employeeId));
+    public EmployeeDto getEmployeeById(String employeeId) {
+        return convertToDto(employeeRepository.findById(String.valueOf(employeeId))
+                .orElseThrow(() -> new EmployeeNotFoundException("No employee found with id: " + employeeId)));
     }
 
-    public ResponseEntity<Employee> updateEmployeeById(String id, Employee updatedEmployee) {
+    public ResponseEntity<Employee> updateEmployeeById(String id, EmployeeDto employeeDto) {
+        Employee updatedEmployee = convertToEntity(employeeDto);
         Employee employee = employeeRepository.findById(String.valueOf(id))
                 .orElseThrow(() -> new EmployeeNotFoundException("No employee found with id: " + id));
         if (employeeRepository.existsByEmail(updatedEmployee.getEmail()) && (!updatedEmployee.getEmail().equals(employee.getEmail()))) {
@@ -79,5 +80,13 @@ public class EmployeeService {
                 () -> new EmployeeNotFoundException("No employee found with id: " + employeeId));
         employeeRepository.delete(employee);
         return ResponseEntity.ok().build();
+    }
+
+    private Employee convertToEntity(EmployeeDto employeeDto) {
+        return modelMapper.map(employeeDto, Employee.class);
+    }
+
+    private EmployeeDto convertToDto(Employee employee) {
+        return modelMapper.map(employee, EmployeeDto.class);
     }
 }

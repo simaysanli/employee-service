@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,17 +17,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(value = "/v1/employee")
+@RequestMapping(value = "/v1")
 @Validated
 public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Operation(summary = "Get all employees")
     @ApiResponses(value = {
@@ -37,14 +33,11 @@ public class EmployeeController {
                             schema = @Schema(implementation = EmployeeDto.class))}),
             @ApiResponse(responseCode = "404", description = "Employees not found",
                     content = @Content)})
-    @GetMapping
+    @GetMapping(value = "employees")
     @Valid
     @SecurityRequirement(name = "Bearer Authentication")
     public List<EmployeeDto> getEmployees() {
-        List<Employee> employees = employeeService.getEmployees();
-        return employees.stream()
-                .map(this::convertToDto)
-                .collect(Collectors.toList());
+        return employeeService.getEmployees();
     }
 
     @Operation(summary = "Create an employee")
@@ -54,12 +47,11 @@ public class EmployeeController {
                             schema = @Schema(implementation = EmployeeDto.class))}),
             @ApiResponse(responseCode = "500", description = "Employee not created",
                     content = @Content)})
-    @PostMapping
+    @PostMapping(value = "employee")
     @SecurityRequirement(name = "Bearer Authentication")
     public Employee addEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
         employeeDto.setId(UUID.randomUUID());
-        Employee employee = convertToEntity(employeeDto);
-        return employeeService.addEmployee(employee);
+        return employeeService.addEmployee(employeeDto);
     }
 
     @Operation(summary = "Get an employee by id")
@@ -71,10 +63,10 @@ public class EmployeeController {
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Employee not found",
                     content = @Content)})
-    @GetMapping(value = "{employeeId}")
+    @GetMapping(value = "employees/{employeeId}")
     @SecurityRequirement(name = "Bearer Authentication")
     public EmployeeDto getEmployeeById(@PathVariable String employeeId) {
-        return convertToDto(employeeService.getEmployeeById(employeeId));
+        return employeeService.getEmployeeById(employeeId);
     }
 
     @Operation(summary = "Update an existing employee")
@@ -86,11 +78,10 @@ public class EmployeeController {
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Employee not found",
                     content = @Content)})
-    @PutMapping(value = "{employeeId}")
+    @PutMapping(value = "employee/{employeeId}")
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Employee> updateEmployee(@PathVariable String employeeId, @Valid @RequestBody EmployeeDto employeeDto) {
-        Employee updatedEmployee = convertToEntity(employeeDto);
-        return employeeService.updateEmployeeById(String.valueOf(employeeId), updatedEmployee);
+        return employeeService.updateEmployeeById(String.valueOf(employeeId), employeeDto);
     }
 
     @Operation(summary = "Delete an existing employee")
@@ -102,18 +93,10 @@ public class EmployeeController {
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Employee not found",
                     content = @Content)})
-    @DeleteMapping(value = "{employeeId}")
+    @DeleteMapping(value = "employee/{employeeId}")
     @SecurityRequirement(name = "Bearer Authentication")
     public ResponseEntity<Void> removeEmployeeById(@PathVariable UUID employeeId) {
         return employeeService.removeEmployeeById(String.valueOf(employeeId));
-    }
-
-    private Employee convertToEntity(EmployeeDto employeeDto) {
-        return modelMapper.map(employeeDto, Employee.class);
-    }
-
-    private EmployeeDto convertToDto(Employee employee) {
-        return modelMapper.map(employee, EmployeeDto.class);
     }
 
 }
