@@ -94,3 +94,6 @@ $ docker-compose down
 - I would have improved kafka implementation.
 - I would have added tests for security and kafka implementation.
 - I would have implemented front-end part to enhance user experience.
+- 
+##### Additional Notes
+- Secret key was added in JwtServices for local tests. I know that I shouldn't push secret key to the repository.
